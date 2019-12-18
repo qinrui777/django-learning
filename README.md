@@ -10,7 +10,7 @@ learning django, make a code record
 | Code source -> https://github.com/CoreyMSchafer/code_snippets/tree/master/Django_Blog|
 
 
-### Env:
+### My Env/Requirements:
 - Mac os
 - sublime 3.2.2  (注意开启自动保存，tab键转换为空格,python对空格较严格)
 - Python 3.7
