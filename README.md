@@ -207,3 +207,6 @@ datetime.datetime(2019, 12, 13, 6, 16, 22, 338009, tzinfo=<UTC>)
 - 在 `user/views.py` 中加入对 `request.method` 方法的判断，加入 `messages` 信息展示集成到 `base.html`中
 > django内建的UserCreationForm能校验部分数据有效性
 - 在注册页面添加email字段, 新建 `users/form.py `
+- 利用 `django-crispy-forms` 美化注册页面
+  - install `pip3 install django-crispy-forms`
+  - template packs [django-crispy-forms](https://django-crispy-forms.readthedocs.io/en/latest/install.html#template-packs)
