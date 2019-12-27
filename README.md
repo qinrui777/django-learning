@@ -114,9 +114,7 @@ Email address: ruqin@thoughtworks.com
 
 ####  05_Database&migrations
 
-django has its own built-in ORM  
-  - SQLite for development
-  - Postgres for production
+django has its own built-in ORM，SQLite for development，Postgres for production
 
 - create`Post`
 
@@ -205,8 +203,58 @@ datetime.datetime(2019, 12, 13, 6, 16, 22, 338009, tzinfo=<UTC>)
 - 在目录 `users` 下新建目录 `templates/users`,然后新建文件 `register.html`，完善页面显示内容
 - 在 `django_demo/urls.py` 中添加 `register` 路径, 打开路径 http://localhost:8000/register/ 测试下
 - 在 `user/views.py` 中加入对 `request.method` 方法的判断，加入 `messages` 信息展示集成到 `base.html`中
-> django内建的UserCreationForm能校验部分数据有效性
+  > django内建的UserCreationForm能校验部分数据有效性
 - 在注册页面添加email字段, 新建 `users/form.py `
 - 利用 `django-crispy-forms` 美化注册页面
   - install `pip3 install django-crispy-forms`
   - template packs [django-crispy-forms](https://django-crispy-forms.readthedocs.io/en/latest/install.html#template-packs)
+
+#### 07_Login_and_logout_system
+
+- import login and logout views `django_demo/urls.py`
+```diff
++ from django.contrib.auth import views as auth_views
+...
++    path('login/', auth_views.LoginView.as_view(template_name='users/login.html'), name='login'),
++    path('logout/', auth_views.LogoutView.as_view(template_name='users/logout.html'),name='logout'),
+```
+
+- 新建 `login.html`、`logout.html`
+
+- login 成功后 redirect到 home page ,编辑 `setting.py`
+```diff
+LOGIN_REDIRECT_URL = 'blog-home'
+```
+
+- 修改注册后的跳转页面，指到 login 页面， 编辑 `users/views.py`
+```diff
+- messages.success(request, f'Account created for {username}!')
+- return redirect('blog-home')
++ messages.success(request, f'Your account {username} has been created!You are now able to log in')
++ return redirect('login')
+```
+
+
+
+- 在 `base.html` 页面中添加判断用户是否登陆
+
+login required decorator
+
+```html
+    <!-- Navbar Right Side -->
+    <div class="navbar-nav">
+      {% if user.is_authenticated %}
+        <a class="nav-item nav-link" href="{% url 'logout' %}">Logout</a>
+      {% else %}
+        <a class="nav-item nav-link" href="{% url 'login' %}">Login</a>
+        <a class="nav-item nav-link" href="{% url 'register' %}">Register</a>
+      {% endif %}
+```
+
+- 添加 profile 路由等，用 `login required decorator`实现当用户成功登陆后才可以看到profile页面
+```diff
++ from django.contrib.auth.decorators import login_required
+
++ @login_required
+def profile(request):
+```
