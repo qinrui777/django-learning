@@ -20,7 +20,7 @@ learning django, make a code record
 
 #### 01_setup_env
 
-```python
+```bash
 #use python3.7
 ~ python3 --version
 Python 3.7.5
@@ -39,7 +39,7 @@ python3 -m django --version
 *可在浏览器访问*
 
 - http://localhost:8000
-- http://localhost:8000/admin/ (可访问，但暂时无法登陆)
+- http://localhost:8000/admin/ (可访问，但暂时无法登陆;完成步骤 *04* 后，用户名/密码： admin/admin123 )
 
 #### 02_Applicatinos&Routes
 
@@ -234,8 +234,6 @@ LOGIN_REDIRECT_URL = 'blog-home'
 + return redirect('login')
 ```
 
-
-
 - 在 `base.html` 页面中添加判断用户是否登陆
 
 login required decorator
@@ -258,3 +256,61 @@ login required decorator
 + @login_required
 def profile(request):
 ```
+
+#### 08_User_Profile_and_Picture
+
+```bash
+#安装 Pillow， 用于用户头像
+pip3 install Pillow
+```
+
+- 新建model `Profile`, 然后做 migrate
+```diff
++ from django.contrib.auth.models import User
+from django.db import models
+
++ class Profile(models.Model):
++    user  =  models.OneToOneField(User, on_delete=models.CASCADE)
++    image  = models.ImageField(default='default.jpg', upload_to='profile_pics')
+```
+
+`python manage.py makemigrations`
+
+`python manage.py migrate`
+
+- 注册Profile到admin页面
+```diff
+from django.contrib import admin
++ from .models import Profile
+
++ admin.site.register(Profile)
+```
+
+- 重新定义 用户头像图片的路径，在setting.py 中
+```diff
+#上传的路径
++ MEDIA_ROOT =  os.path.join(BASE_DIR, 'media')
+
+#浏览器的访问路径
++ MEDIA_UL = '/media/'
+```
+
+- 修改 profile.html 页面，添加标签；另外需要编辑 `django_demo/urls.py`
+
+Django Static File Docs:  
+https://docs.djangoproject.com/en/2.1/howto/static-files/#serving-files-uploaded-by-a-user-during-development
+> 注意区分生产环境/非生产环境用法
+
+```diff
+# django_demo/urls.py
++  from django.conf import settings
++  from django.conf.urls.static import static
+...
++  if settings.DEBUG:
++      urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+```
+
+- 实现默认在新建用户时给用户的头像设置一个 default.jpg
+  - 新建 `signals.py`  （sender receiver）
+  - `users/apps.py`  添加代码
+

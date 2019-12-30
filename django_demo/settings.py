@@ -125,3 +125,9 @@ STATIC_URL = '/static/'
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 LOGIN_REDIRECT_URL = 'blog-home'
+
+#上传的路径
+MEDIA_ROOT =  os.path.join(BASE_DIR, 'media')
+
+#浏览器的访问路径
+MEDIA_URL = '/media/'
